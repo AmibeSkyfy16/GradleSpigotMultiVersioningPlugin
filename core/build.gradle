@@ -1,0 +1,53 @@
+group 'ch.skyfy'
+version '1.0-SNAPSHOT'
+
+dependencies {
+    compileOnly "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT"
+    implementation 'org.reflections:reflections:0.10.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+task buildPlugin(type: Jar) {
+    archiveFileName = "${rootProject.name}.jar"
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+    from getRootProject().allprojects.findAll().sourceSets.main.output
+
+
+    doLast {
+        var oldJar = new File(project.buildDir, "libs/" + project.name + "-" + project.version + ".jar")
+        if (oldJar.exists()) {
+            oldJar.delete()
+        }
+    }
+
+    // Copy automatically your plugin to your server
+    doLast {
+        copy {
+            from ".\\build\\libs\\${rootProject.name}.jar"
+            into "C:\\Users\\colin\\Desktop\\Spigot_1.18.2\\plugins"
+        }
+    }
+}
+
+// A debug task, not used much anymore, but still useful
+task printSourceSetInformation() {
+    doLast {
+        sourceSets.each { srcSet ->
+            System.out.println("""[$srcSet.name]
+            \t--> Source directories: $srcSet.allJava.srcDirs
+            \t--> Output directories: $srcSet.output.classesDirs.files\n
+            """.trim().replaceAll(" +", " "))
+            srcSet.compileClasspath.files.each {
+                System.out.print(" " + it.path + "\n")
+            }
+            System.out.println()
+        }
+    }
+}
+sourceCompatibility = JavaVersion.VERSION_15
+targetCompatibility = JavaVersion.VERSION_15

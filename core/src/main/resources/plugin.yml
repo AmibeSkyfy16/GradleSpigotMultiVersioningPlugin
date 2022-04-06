@@ -1,0 +1,6 @@
+name: GradleSpigotMultiVersionningPlugin
+version: 1.0.0
+main: ch.skyfy.plugin.GradleSpigotMultiVersioningPlugin
+api-version: 1.16
+authors: [ Skyfy16 ]
+description: A Sample Plugin for 1.18.2, do nothing in particulastop
